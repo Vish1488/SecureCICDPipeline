@@ -64,6 +64,24 @@ jobs:
                 image-ref: ghcr.io/${{env.IMAGE_OWNER_LC}}/${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}}
                 format: table
                 output: trivy-report.txt
+            
+            #Generating SBOM for this pipeline by adding syft
+            
+            - name: Generate SBOM
+              uses: anchore/syft-action@v0.1.0
+              with:
+                image: ${{env.IMAGE_NAME}}
+                output: sbom.json  
+            
+            #Image signing to make the supply chain temper-resistant
+
+            - name: Install Cosign
+              uses: sigstore/cosign-installer@v3.0.2
+
+            #Actual image signing
+
+            - name: Sign image with Cosign
+              run: cosign sign ${{env.IMAGE_NAME}}
 
             # Login to GCHR
 
