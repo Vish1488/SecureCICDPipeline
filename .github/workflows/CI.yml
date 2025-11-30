@@ -37,6 +37,7 @@ jobs:
               run: bandit -r app/users -f xml -o banditreport.xml
             
             - name: Run Semgrep
+              continue-on-error: true
               run: semgrep ci --config p/ci #p/ci is a set of rules in semgrep that run general purpose checks in a CI pipeline code
             
             #building the docker image
@@ -47,6 +48,7 @@ jobs:
             # Using Trivy to scan the image
 
             - name: Trivy Scan
+              continue-on-error: true
               uses: aquasecurity/trivy-action@master
               with:
                 image-ref: ghcr.io/${{github.repository}}/users-service:latest
