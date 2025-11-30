@@ -1,0 +1,69 @@
+name: Secure CI Pipeline
+
+on: 
+    push:
+        branches: [ "main" ]
+    pull_request:
+        branches: [ "main" ]
+
+jobs:
+    build-and-scan:
+        runs-on: ubuntu-latest
+        
+        permissions:
+            contents: read
+            packages: write
+            security-events: write
+        
+        steps:
+            #setting up python
+            - name: Fetch Code
+              uses: actions/checkout
+            
+            - name: Install Python
+              uses: actions/setup-python
+              with:
+                python-version: "3.10"
+            
+            - name: Install Dependencies
+              run: |
+                pip install -r app/users/requirements.txt
+                pip install bandit semgrep
+
+            #setting up security scanning
+
+            - name: Run Bandit
+              run: bandit -r app/users -f xml -o banditreport.xml
+            
+            - name: Run Semgrep
+              run: semgrep ci --config p/ci #p/ci is a set of rules in semgrep that run general purpose checks in a CI pipeline code
+            
+            #building the docker image
+
+            - name: Build Image
+              run: docker build -t ghcr.io/${{github.repository}}/users-service:latest app/users
+            
+            # Using Trivy to scan the image
+
+            - name: Trivy Scan
+              uses: aquasecurity/trivy-action
+              with:
+                image-ref: ghcr.io/${{github.repository}}/users-service:latest
+                format: table
+
+            # Login to GCHR
+
+            - name: Login to GHCR
+              uses: docker/login-action
+              with:
+                registry: ghcr.io
+                username: ${{github.actor}}
+                password: ${{secrets.GITHUB_TOKEN}}
+
+            # Push the image to GCHR
+
+            - name: Push Image
+              run: docker push ghcr.io/${{github.repository}}/users-service:latest
+            
+
+            
