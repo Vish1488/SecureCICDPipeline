@@ -73,15 +73,15 @@ jobs:
                 format: table
                 output: trivy-report.txt
             
-            #Image signing to make the supply chain temper-resistant
+            # #Image signing to make the supply chain temper-resistant
 
-            - name: Install Cosign
-              uses: sigstore/cosign-installer@v3.6.0
+            # - name: Install Cosign
+            #   uses: sigstore/cosign-installer@v3.6.0
 
-            #Actual image signing
+            # #Actual image signing
 
-            - name: Sign image with Cosign
-              run: cosign sign ghcr.io/${{env.IMAGE_OWNER_LC}}/${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}}
+            # - name: Sign image with Cosign
+            #   run: cosign sign ghcr.io/{add the env vars for owner,imagename,imagetag}
 
             # Login to GCHR
 
