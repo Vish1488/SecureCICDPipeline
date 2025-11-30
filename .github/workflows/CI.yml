@@ -45,6 +45,9 @@ jobs:
             - name: Run Semgrep
               continue-on-error: true
               run: semgrep ci --config p/ci #p/ci is a set of rules in semgrep that run general purpose checks in a CI pipeline code
+
+            - name: Disable Buildkit
+              run: echo "DOCKER_BUILDKIT=0" >> $GITHUB_ENV
             
             #building the docker image
 
