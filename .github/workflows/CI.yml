@@ -44,7 +44,7 @@ jobs:
             
             - name: Run Semgrep
               continue-on-error: true
-              run: semgrep ci --config p/ci #p/ci is a set of rules in semgrep that run general purpose checks in a CI pipeline code
+              run: semgrep ci --config p/ci --json > semgrep.json #p/ci is a set of rules in semgrep that run general purpose checks in a CI pipeline code
 
             - name: Disable Buildkit
               run: echo "DOCKER_BUILDKIT=0" >> $GITHUB_ENV
@@ -62,6 +62,7 @@ jobs:
               with:
                 image-ref: ghcr.io/${{ env.IMAGE_OWNER}}/${{env.IMAGE_REPO}}/${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}}
                 format: table
+                output: trivy-report.txt
 
             # Login to GCHR
 
