@@ -35,6 +35,9 @@ jobs:
               run: |
                 pip install -r app/users/requirements.txt
                 pip install bandit semgrep
+            
+            - name: Convert Owner to lowercase
+              run: echo "IMAGE_OWNER_LC=${IMAGE_OWNER,,}" >> $GITHUB_ENV
 
             #setting up security scanning
 
@@ -52,7 +55,7 @@ jobs:
             #building the docker image
 
             - name: Build Image
-              run: docker build -t ghcr.io/${IMAGE_OWNER,,}/${IMAGE_NAME}:${IMAGE_TAG} app/users
+              run: docker build -t ghcr.io/${IMAGE_OWNER_LC}/${IMAGE_NAME}:${IMAGE_TAG} app/users
             
             # Using Trivy to scan the image
 
@@ -60,7 +63,7 @@ jobs:
               continue-on-error: true
               uses: aquasecurity/trivy-action@master
               with:
-                image-ref: ghcr.io/${IMAGE_OWNER,,}/${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}}
+                image-ref: ghcr.io/${{(env.IMAGE_OWNER_LC)}}/${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}}
                 format: table
                 output: trivy-report.txt
 
@@ -76,7 +79,7 @@ jobs:
             # Push the image to GCHR
 
             - name: Push Image
-              run: docker push ghcr.io/${IMAGE_OWNER,,}/${IMAGE_NAME}:${IMAGE_TAG} 
+              run: docker push ghcr.io/${IMAGE_OWNER_LC}/${IMAGE_NAME}:${IMAGE_TAG} 
             
             #creating artifacts
 
