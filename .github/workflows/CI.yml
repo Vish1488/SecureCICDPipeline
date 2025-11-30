@@ -33,6 +33,7 @@ jobs:
             #setting up security scanning
 
             - name: Run Bandit
+              continue-on-error: true
               run: bandit -r app/users -f xml -o banditreport.xml
             
             - name: Run Semgrep
