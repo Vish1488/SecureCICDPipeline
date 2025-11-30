@@ -51,7 +51,7 @@ jobs:
             - name: Build Image
               run: docker build \
                -t ghcr.io/${IMAGE_OWNER,,}/${IMAGE_NAME}:${IMAGE_TAG} \
-               app/users
+               app/users .
             
             # Using Trivy to scan the image
 
