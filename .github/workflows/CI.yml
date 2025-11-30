@@ -55,6 +55,14 @@ jobs:
             - name: Build Image
               run: docker build -t ghcr.io/${IMAGE_OWNER_LC}/${IMAGE_NAME}:${IMAGE_TAG} app/users
             
+            #Generating SBOM for this pipeline by adding syft
+            
+            - name: Generate SBOM
+              uses: anchore/sbom-action@v0
+              with:
+                image: ${{env.IMAGE_NAME}}
+                output: sbom.json  
+            
             # Using Trivy to scan the image
 
             - name: Trivy Scan
@@ -65,18 +73,10 @@ jobs:
                 format: table
                 output: trivy-report.txt
             
-            #Generating SBOM for this pipeline by adding syft
-            
-            - name: Generate SBOM
-              uses: anchore/syft-action@v0.1.0
-              with:
-                image: ${{env.IMAGE_NAME}}
-                output: sbom.json  
-            
             #Image signing to make the supply chain temper-resistant
 
             - name: Install Cosign
-              uses: sigstore/cosign-installer@v3.0.2
+              uses: sigstore/cosign-installer@v3.6.0
 
             #Actual image signing
 
@@ -116,6 +116,13 @@ jobs:
               with:
                 name: trivy-report
                 path: trivy-report.txt
+
+            - name: SBOM
+              uses: actions/upload-artifact@v4
+              with:
+                name: sbom-report
+                path: sbom.json
+            
             
 
             
