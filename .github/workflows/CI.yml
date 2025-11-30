@@ -52,9 +52,7 @@ jobs:
             #building the docker image
 
             - name: Build Image
-              run: docker build \
-               -t ghcr.io/${IMAGE_OWNER,,}/${IMAGE_NAME}:${IMAGE_TAG} \
-               app/users
+              run: docker build -t ghcr.io/${IMAGE_OWNER,,}/${IMAGE_NAME}:${IMAGE_TAG} app/users
             
             # Using Trivy to scan the image
 
@@ -77,7 +75,7 @@ jobs:
             # Push the image to GCHR
 
             - name: Push Image
-              run: docker push ghcr.io/${IMAGE_OWNER,,}/${IMAGE_NAME}:${IMAGE_TAG} \
+              run: docker push ghcr.io/${IMAGE_OWNER,,}/${IMAGE_NAME}:${IMAGE_TAG} 
             
 
             
