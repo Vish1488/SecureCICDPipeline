@@ -15,6 +15,12 @@ jobs:
             packages: write
             security-events: write
         
+        env:
+          IMAGE_OWNER: ${{ github.repository_owner }}
+          IMAGE_REPO: cicdproject
+          IMAGE_NAME: users-service
+          IMAGE_TAG: latest
+        
         steps:
             #setting up python
             - name: Fetch Code
@@ -43,7 +49,9 @@ jobs:
             #building the docker image
 
             - name: Build Image
-              run: docker build -t ghcr.io/${{github.repository_owner}}/cicdproject/users-service:latest app/users
+              run: docker build \
+               -t ghcr.io/${IMAGE_OWNER,,}/${IMAGE_NAME}:${IMAGE_TAG} \
+               app/users
             
             # Using Trivy to scan the image
 
@@ -51,7 +59,7 @@ jobs:
               continue-on-error: true
               uses: aquasecurity/trivy-action@master
               with:
-                image-ref: ghcr.io/${{github.repository_owner}}/cicdproject/users-service:latest
+                image-ref: ghcr.io/${{ env.IMAGE_OWNER}}/${{env.IMAGE_REPO}}/${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}}
                 format: table
 
             # Login to GCHR
@@ -66,7 +74,7 @@ jobs:
             # Push the image to GCHR
 
             - name: Push Image
-              run: docker push ghcr.io/${{github.repository_owner}}/cicdproject/users-service:latest
+              run: docker push ghcr.io/${IMAGE_OWNER,,}/${IMAGE_NAME}:${IMAGE_TAG} \
             
 
             
