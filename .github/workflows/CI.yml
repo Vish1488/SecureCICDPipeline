@@ -77,5 +77,25 @@ jobs:
             - name: Push Image
               run: docker push ghcr.io/${IMAGE_OWNER,,}/${IMAGE_NAME}:${IMAGE_TAG} 
             
+            #creating artifacts
+
+            - name: Upload Bandit Report
+              uses: actions/upload-artifact@v4
+              with:
+                name: bandit-report
+                path: banditreport.xml
+
+            - name: Upload Semgrep Report
+              uses: actions/upload-artifact@v4
+              with:
+                name: semgrep-report
+                path: semgrep.json
+
+            - name: Upload Trivy Report
+              uses: actions/upload-artifact@v4
+              with:
+                name: trivy-report
+                path: trivy-report.json
+            
 
             
