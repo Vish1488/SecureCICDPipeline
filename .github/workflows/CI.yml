@@ -60,7 +60,7 @@ jobs:
             - name: Generate SBOM
               uses: anchore/sbom-action@v0
               with:
-                image: ${{env.IMAGE_NAME}}
+                image-ref: ghcr.io/${{env.IMAGE_OWNER_LC}}/${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}}
                 output: sbom.json  
             
             # Using Trivy to scan the image
@@ -81,7 +81,7 @@ jobs:
             #Actual image signing
 
             - name: Sign image with Cosign
-              run: cosign sign ${{env.IMAGE_NAME}}
+              run: cosign sign ghcr.io/${{env.IMAGE_OWNER_LC}}/${{env.IMAGE_NAME}}:${{env.IMAGE_TAG}}
 
             # Login to GCHR
 
